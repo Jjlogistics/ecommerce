@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en-NG">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f7f4" />
+    <meta
+      name="description"
+      content="Shop thoughtfully made Nigerian and contemporary fashion. Discover new arrivals, native styles, everyday essentials and more, delivered across Nigeria."
+    />
+    <meta property="og:title" content="LENO — Nigerian fashion, found." />
+    <meta
+      property="og:description"
+      content="Discover contemporary fashion and authentic Nigerian styles, all in one place."
+    />
+    <meta property="og:type" content="website" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "OnlineStore",
+        "name": "LENO",
+        "description": "Contemporary fashion, authentic Nigerian design, and everyday essentials.",
+        "currenciesAccepted": "NGN",
+        "areaServed": {
+          "@type": "Country",
+          "name": "Nigeria"
+        },
+        "logo": "/images/leno-logo.svg"
+      }
+    </script>
+    <title>LENO — Nigerian fashion, found.</title>
+    <link rel="icon" href="/images/leno-logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/script.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to products</a>
+    <div class="announcement">
+      <span>Complimentary delivery on orders over ₦150,000</span
+      ><span class="announcement-location"
+        >Proudly serving Nigeria <span aria-hidden="true">✦</span></span
+      >
+    </div>
+    <header class="site-header">
+      <button
+        class="icon-button mobile-menu-button"
+        id="mobile-menu-button"
+        aria-label="Open navigation"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+      <a class="brand" href="#home" aria-label="LENO home"
+        ><img src="/images/leno-logo.svg" alt="LENO fashion marketplace"
+      /></a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <button
+          class="nav-menu-trigger"
+          id="categories-trigger"
+          aria-expanded="false"
+          aria-controls="mega-menu"
+        >
+          Categories <span aria-hidden="true">⌄</span>
+        </button>
+        <a href="#new-arrivals">New arrivals</a>
+        <a href="#men-collection" data-gender-link="Men">Men</a>
+        <a href="#women-collection" data-gender-link="Women">Women</a>
+        <a href="#kids-collection" data-gender-link="Kids">Kids</a>
+        <a href="#categories" data-category-link="Accessories">Accessories</a>
+        <a href="#sale" class="sale-link">Sale</a>
+      </nav>
+      <div class="header-actions">
+        <button
+          class="icon-button search-trigger"
+          id="search-trigger"
+          aria-label="Search products"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.8" cy="10.8" r="6.4"></circle>
+            <path d="m16 16 4.5 4.5"></path>
+          </svg>
+        </button>
+        <button
+          class="icon-button account-trigger"
+          id="account-trigger"
+          aria-label="Account"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.3"></circle>
+            <path d="M5.5 20c.5-3.3 2.7-5.1 6.5-5.1s6 1.8 6.5 5.1"></path>
+          </svg>
+        </button>
+        <button
+          class="icon-button"
+          id="wishlist-trigger"
+          aria-label="Open wishlist"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M20.2 8.8c0 4.1-8.2 9.4-8.2 9.4S3.8 12.9 3.8 8.8a4.2 4.2 0 0 1 8.2-1.3 4.2 4.2 0 0 1 8.2 1.3Z"
+            ></path></svg
+          ><span class="action-count" id="wishlist-count">0</span
+          ><span class="action-label">Saved</span>
+        </button>
+        <button
+          class="icon-button cart-trigger"
+          id="cart-trigger"
+          aria-label="Open shopping bag"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 8.5h14l-1 12H6l-1-12Z"></path>
+            <path d="M9 9V6a3 3 0 0 1 6 0v3"></path></svg
+          ><span class="action-count" id="cart-count">0</span
+          ><span class="action-label">Bag</span>
+        </button>
+      </div>
+      <div class="mega-menu" id="mega-menu" hidden></div>
+    </header>
+    <nav
+      class="mobile-menu"
+      id="mobile-menu"
+      aria-label="Mobile navigation"
+      hidden
+    >
+      <a href="#home">Home</a
+      ><button data-open-categories>Categories <span>＋</span></button>
+      <div class="mobile-category-list" id="mobile-category-list"></div>
+      <a href="#new-arrivals">New arrivals</a
+      ><a href="#men-collection" data-gender-link="Men">Men</a
+      ><a href="#women-collection" data-gender-link="Women">Women</a
+      ><a href="#kids-collection" data-gender-link="Kids">Kids</a
+      ><a href="#products" data-category-link="Shoes">Shoes</a
+      ><a href="#products" data-category-link="Accessories">Accessories</a
+      ><a class="sale-link" href="#sale">Sale</a>
+      <button id="mobile-wishlist">
+        Wishlist <span id="mobile-wishlist-count">0</span></button
+      ><button id="mobile-cart">
+        Shopping bag <span id="mobile-cart-count">0</span>
+      </button>
+    </nav>
+
+    <main id="main">
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <div
+          class="hero-image"
+          role="img"
+          aria-label="Editorial portrait featuring contemporary African fashion"
+        >
+          <div class="hero-image-overlay"></div>
+          <div class="hero-image-note">
+            <span>THE LAGOS EDIT</span><span>26° 27′ N — 03° 23′ E</span>
+          </div>
+        </div>
+        <div class="hero-content">
+          <p class="eyebrow">
+            <span class="eyebrow-line"></span> A new point of view
+          </p>
+          <h1 id="hero-title">Style that<br />feels like <em>you.</em></h1>
+          <p>
+            Contemporary fashion. Authentic Nigerian design. Pieces worth
+            keeping — wherever in Nigeria you call home.
+          </p>
+          <div class="hero-ctas">
+            <a class="button button-dark" href="#products"
+              >Discover the edit <span aria-hidden="true">↗</span></a
+            ><a class="underlined-link" href="#native-wear"
+              >Meet the makers <span aria-hidden="true">→</span></a
+            >
+          </div>
+          <div class="hero-footnote">
+            <span class="hero-spark" aria-hidden="true">✳</span
+            ><span>Considered style, from Lagos to everywhere.</span>
+          </div>
+        </div>
+        <div class="hero-index">
+          <span>01</span><span></span><span>03</span>
+        </div>
+      </section>
+
+      <section
+        class="category-section section-shell"
+        id="categories"
+        aria-labelledby="category-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Find your fit</p>
+            <h2 id="category-title">A world of <em>good things.</em></h2>
+          </div>
+          <a href="#products" class="underlined-link"
+            >Shop all categories <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="category-grid" id="category-grid">
+          <div class="category-skeleton"></div>
+          <div class="category-skeleton"></div>
+          <div class="category-skeleton"></div>
+          <div class="category-skeleton"></div>
+        </div>
+      </section>
+
+      <section
+        class="product-section section-shell"
+        id="new-arrivals"
+        aria-labelledby="new-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Just landed</p>
+            <h2 id="new-title">New, and <em>noteworthy.</em></h2>
+          </div>
+          <a href="#products" class="underlined-link" data-new-link
+            >Shop new arrivals <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="product-row" id="new-products">
+          <div class="product-skeleton"></div>
+          <div class="product-skeleton"></div>
+          <div class="product-skeleton"></div>
+          <div class="product-skeleton"></div>
+        </div>
+      </section>
+
+      <section
+        class="product-section section-shell curated-section"
+        id="men-collection"
+        aria-labelledby="men-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">A considered wardrobe</p>
+            <h2 id="men-title">The modern <em>gentleman.</em></h2>
+          </div>
+          <a href="#products" class="underlined-link" data-gender-link="Men"
+            >Shop the men's edit <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="product-row" id="men-products"></div>
+      </section>
+      <section
+        class="product-section section-shell curated-section"
+        id="women-collection"
+        aria-labelledby="women-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Good things, beautifully made</p>
+            <h2 id="women-title">For the <em>way you are.</em></h2>
+          </div>
+          <a href="#products" class="underlined-link" data-gender-link="Women"
+            >Shop the women's edit <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="product-row" id="women-products"></div>
+      </section>
+      <section
+        class="product-section section-shell curated-section"
+        id="kids-collection"
+        aria-labelledby="kids-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Little people, big personality</p>
+            <h2 id="kids-title">Small, <em>mighty style.</em></h2>
+          </div>
+          <a href="#products" class="underlined-link" data-gender-link="Kids"
+            >Shop the kids' edit <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="product-row" id="kids-products"></div>
+      </section>
+      <section
+        class="product-section section-shell curated-section"
+        id="best-sellers"
+        aria-labelledby="bestsellers-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">The ones you keep coming back to</p>
+            <h2 id="bestsellers-title">Good things, <em>well loved.</em></h2>
+          </div>
+          <a href="#products" class="underlined-link" data-popular-link
+            >Shop best sellers <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="product-row" id="bestseller-products"></div>
+      </section>
+
+      <section class="editorial-banner" id="native-wear">
+        <div
+          class="editorial-image"
+          role="img"
+          aria-label="A contemporary Nigerian native outfit in warm tones"
+        ></div>
+        <div class="editorial-copy">
+          <p class="eyebrow">Rooted in something real</p>
+          <h2>Made here.<br /><em>Worn everywhere.</em></h2>
+          <p>
+            Meet the Nigerian designers bringing heritage into the now.
+            Thoughtful craft, confident colour, and a story in every stitch.
+          </p>
+          <a
+            href="#products"
+            class="button button-outline"
+            data-category-link="Traditional / Native Wear"
+            >Explore Nigerian design <span aria-hidden="true">↗</span></a
+          ><span class="editorial-caption">THE NEW NATIVE / ISSUE 01</span>
+        </div>
+      </section>
+
+      <section
+        class="product-section section-shell"
+        id="products"
+        aria-labelledby="product-title"
+      >
+        <div class="section-heading catalog-heading">
+          <div>
+            <p class="eyebrow">The LENO selection</p>
+            <h2 id="product-title">Find your <em>something.</em></h2>
+          </div>
+          <p class="catalog-intro">
+            Independent Nigerian labels and considered everyday pieces, all in
+            one place.
+          </p>
+        </div>
+        <div class="catalog-toolbar">
+          <div class="catalog-title-row">
+            <span
+              class="results-count"
+              id="results-count"
+              aria-live="polite"
+            ></span
+            ><button
+              class="filter-toggle"
+              id="filter-toggle"
+              aria-expanded="false"
+              aria-controls="filter-sidebar"
+            >
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M3 5h14M5 10h10m-7 5h4"></path>
+              </svg>
+              Filters <span id="active-filter-count" hidden></span>
+            </button>
+          </div>
+          <div class="catalog-search">
+            <svg viewBox="0 0 20 20" aria-hidden="true">
+              <circle cx="8.8" cy="8.8" r="5.8"></circle>
+              <path d="m13.2 13.2 4 4"></path></svg
+            ><input
+              id="product-search"
+              type="search"
+              placeholder="Search pieces, labels, colours…"
+              autocomplete="off"
+              list="product-suggestions"
+              aria-label="Search products"
+            /><datalist id="product-suggestions"></datalist
+            ><button id="clear-search" aria-label="Clear search" hidden>
+              ×
+            </button>
+          </div>
+          <label class="sort-control"
+            ><span>Sort by</span
+            ><select id="sort-select" aria-label="Sort products">
+              <option value="featured">Featured</option>
+              <option value="newest">Newest</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+              <option value="rating">Highest rated</option>
+              <option value="popular">Most popular</option>
+            </select></label
+          >
+        </div>
+        <div class="catalog-layout" id="catalog-layout">
+          <aside
+            class="filter-sidebar"
+            id="filter-sidebar"
+            aria-label="Product filters"
+          >
+            <div class="filter-heading">
+              <h3>Refine your edit</h3>
+              <button id="filter-close" aria-label="Close filters">×</button>
+            </div>
+            <label class="filter-field"
+              >Category<select id="filter-category">
+                <option value="">All categories</option>
+              </select></label
+            >
+            <label class="filter-field"
+              >Subcategory<select id="filter-subcategory" disabled>
+                <option value="">All subcategories</option>
+              </select></label
+            >
+            <label class="filter-field"
+              >Shop by<select id="filter-gender">
+                <option value="">Everyone</option>
+                <option>Women</option>
+                <option>Men</option>
+                <option>Unisex</option>
+                <option>Kids</option>
+              </select></label
+            >
+            <label class="filter-field"
+              >Label<select id="filter-brand">
+                <option value="">All labels</option>
+              </select></label
+            >
+            <div class="filter-field">
+              <span class="filter-label">Price range</span>
+              <div class="price-inputs">
+                <label
+                  ><span class="sr-only">Minimum price</span
+                  ><input
+                    id="price-min"
+                    type="number"
+                    min="0"
+                    placeholder="₦ Min" /></label
+                ><span>—</span
+                ><label
+                  ><span class="sr-only">Maximum price</span
+                  ><input
+                    id="price-max"
+                    type="number"
+                    min="0"
+                    placeholder="₦ Max"
+                /></label>
+              </div>
+            </div>
+            <label class="filter-field"
+              >Size<select id="filter-size">
+                <option value="">Any size</option>
+                <option>XS</option>
+                <option>S</option>
+                <option>M</option>
+                <option>L</option>
+                <option>XL</option>
+                <option>XXL</option>
+                <option>One size</option>
+              </select></label
+            >
+            <label class="filter-field"
+              >Colour<select id="filter-color">
+                <option value="">Any colour</option>
+              </select></label
+            >
+            <label class="filter-field"
+              >Minimum rating<select id="filter-rating">
+                <option value="0">Any rating</option>
+                <option value="4">4★ & above</option>
+                <option value="4.5">4.5★ & above</option>
+              </select></label
+            >
+            <label class="check-filter"
+              ><input id="filter-stock" type="checkbox" /> In stock only</label
+            >
+            <label class="check-filter"
+              ><input id="filter-sale" type="checkbox" /> On sale</label
+            >
+            <label class="check-filter"
+              ><input id="filter-new" type="checkbox" /> New arrivals</label
+            >
+            <button class="clear-filters" id="clear-filters">
+              Clear all filters
+            </button>
+            <button class="button button-dark apply-filters" id="apply-filters">
+              Show pieces
+            </button>
+          </aside>
+          <div class="product-grid" id="product-grid" aria-live="polite"></div>
+        </div>
+        <div class="empty-products" id="empty-products" hidden>
+          <span aria-hidden="true">✳</span>
+          <h3>Nothing in this edit — yet.</h3>
+          <p>
+            Try a different search or reset your filters to find your next
+            favourite.
+          </p>
+          <button class="button button-dark" id="empty-reset">
+            Clear filters
+          </button>
+        </div>
+        <div class="catalog-error" id="catalog-error" role="alert" hidden>
+          <h3>We couldn’t load the edit.</h3>
+          <p>Please try again. Your bag and wishlist are still saved on this device.</p>
+          <button class="button button-dark" id="retry-catalog" type="button">Try again</button>
+        </div>
+      </section>
+
+      <section class="collection-strip" id="sale" aria-labelledby="sale-title">
+        <div class="sale-copy">
+          <p class="eyebrow">Good things, better prices</p>
+          <h2 id="sale-title">A little treat.<br /><em>A lot of style.</em></h2>
+          <p>
+            Last chance to make them yours. Selected pieces, thoughtfully
+            priced.
+          </p>
+          <a href="#products" class="button button-light" data-sale-link
+            >Shop the sale <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <div class="sale-products" id="sale-products"></div>
+      </section>
+
+      <section
+        class="trust-section section-shell"
+        aria-label="Shopping with LENO"
+      >
+        <article>
+          <span class="trust-icon">✳</span>
+          <h3>Made for Nigeria</h3>
+          <p>
+            Local designers, local currency, deliveries to all 36 states and the
+            FCT.
+          </p>
+        </article>
+        <article>
+          <span class="trust-icon">↗</span>
+          <h3>Thoughtful delivery</h3>
+          <p>
+            Clear delivery options, straight to your door. Free over ₦150,000.
+          </p>
+        </article>
+        <article>
+          <span class="trust-icon">♡</span>
+          <h3>Worth keeping</h3>
+          <p>
+            Independent labels and carefully selected pieces, chosen with
+            intention.
+          </p>
+        </article>
+      </section>
+      <section
+        class="testimonials-section section-shell"
+        id="community"
+        aria-labelledby="community-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">A little word of mouth</p>
+            <h2 id="community-title">Good finds, <em>good company.</em></h2>
+          </div>
+          <p class="catalog-intro">
+            Sample customer notes — replace with verified reviews when
+            available.
+          </p>
+        </div>
+        <div class="testimonial-grid">
+          <figure>
+            <span class="testimonial-stars" aria-label="Five out of five stars"
+              >★★★★★</span
+            >
+            <blockquote>
+              “I finally found Nigerian designers all in one place. The Adire
+              dress is even more beautiful in person.”
+            </blockquote>
+            <figcaption>
+              <span class="testimonial-avatar">AO</span
+              ><span
+                ><strong>Amara O.</strong
+                ><small>Lagos · sample review</small></span
+              >
+            </figcaption>
+          </figure>
+          <figure>
+            <span class="testimonial-stars" aria-label="Five out of five stars"
+              >★★★★★</span
+            >
+            <blockquote>
+              “A really lovely edit — thoughtful pieces I haven’t seen
+              everywhere else. The bag is my new everyday favourite.”
+            </blockquote>
+            <figcaption>
+              <span class="testimonial-avatar">TK</span
+              ><span
+                ><strong>Tomi K.</strong
+                ><small>Abuja · sample review</small></span
+              >
+            </figcaption>
+          </figure>
+          <figure>
+            <span class="testimonial-stars" aria-label="Five out of five stars"
+              >★★★★★</span
+            >
+            <blockquote>
+              “The native collection feels modern without losing what makes it
+              special. I’ve already sent the link to my sister.”
+            </blockquote>
+            <figcaption>
+              <span class="testimonial-avatar">NI</span
+              ><span
+                ><strong>Nneka I.</strong
+                ><small>Port Harcourt · sample review</small></span
+              >
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <section class="newsletter">
+        <div>
+          <p class="eyebrow">A note from LENO</p>
+          <h2>Good style. <em>In your inbox.</em></h2>
+          <p>
+            New arrivals, Nigerian makers, and the occasional very good find.
+          </p>
+        </div>
+        <form id="newsletter-form">
+          <label class="sr-only" for="newsletter-email">Email address</label
+          ><input
+            id="newsletter-email"
+            type="email"
+            placeholder="Your email address"
+            required
+          /><button type="submit" aria-label="Subscribe to newsletter">
+            Join us <span aria-hidden="true">→</span>
+          </button>
+          <p
+            class="form-feedback"
+            id="newsletter-feedback"
+            aria-live="polite"
+          ></p>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="footer">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <a class="brand" href="#home" aria-label="LENO home"
+            ><img src="/images/leno-logo.svg" alt="LENO fashion marketplace"
+          /></a>
+          <p>Good things to wear.<br />Good people to wear them.</p>
+          <div class="social-links">
+            <a href="#footer" aria-label="Instagram">ig</a
+            ><a href="#footer" aria-label="Pinterest">p</a
+            ><a href="#footer" aria-label="TikTok">tk</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h3>Find your fit</h3>
+          <a href="#women-collection" data-gender-link="Women">Women</a
+          ><a href="#men-collection" data-gender-link="Men">Men</a
+          ><a href="#kids-collection" data-gender-link="Kids">Kids</a
+          ><a href="#categories">Shoes & bags</a
+          ><a href="#new-arrivals">New arrivals</a><a href="#sale">Sale edit</a>
+        </div>
+        <div class="footer-column">
+          <h3>Here to help</h3>
+          <a href="mailto:hello@leno.ng">Contact us</a
+          >          <a href="#delivery" data-info="delivery">Delivery information</a
+          ><a href="#returns" data-info="returns">Returns & exchanges</a
+          ><a href="#faq" data-info="faq">FAQs</a
+          ><a href="#size-guide" data-info="size">Size guide</a>
+        </div>
+        <div class="footer-column">
+          <h3>The LENO story</h3>
+          <a href="#native-wear" data-info="about">About us</a
+          ><a href="#native-wear" data-info="about">Meet the makers</a
+          ><a href="#privacy" data-info="privacy">Privacy policy</a
+          ><a href="#terms" data-info="terms">Terms & conditions</a
+          ><a href="mailto:hello@leno.ng">Partner with us</a>
+        </div>
+        <div class="footer-contact">
+          <h3>Say hello</h3>
+          <a href="mailto:hello@leno.ng">hello@leno.ng</a
+          ><a href="tel:+2342013300188">+234 201 330 0188</a>
+          <p>Lagos, Nigeria<br />Delivering across Nigeria</p>
+          <div class="payment-marks">
+            <span>VISA</span><span>Verve</span><span>MC</span
+            ><span>PAYSTACK</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <a class="brand footer-logo" href="#home"
+          ><img src="/images/leno-logo.svg" alt="LENO" /></a
+        ><span>© 2026 LENO. Made with intention in Nigeria.</span
+        ><span>NGN ₦ <span aria-hidden="true">·</span> Nigeria</span>
+      </div>
+    </footer>
+
+    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+    <aside
+      class="side-drawer"
+      id="side-drawer"
+      aria-labelledby="drawer-title"
+      aria-modal="true"
+      role="dialog"
+      hidden
+    >
+      <div class="drawer-header">
+        <div>
+          <p class="eyebrow">Yours, if you like</p>
+          <h2 id="drawer-title">Your bag</h2>
+        </div>
+        <button class="close-button" id="drawer-close" aria-label="Close panel">
+          ×
+        </button>
+      </div>
+      <div class="drawer-body" id="drawer-body"></div>
+      <div class="drawer-footer" id="drawer-footer"></div>
+    </aside>
+
+    <dialog
+      class="product-dialog"
+      id="product-dialog"
+      aria-labelledby="detail-name"
+    >
+      <button
+        class="modal-close"
+        data-close-dialog
+        aria-label="Close product details"
+      >
+        ×
+      </button>
+      <div class="detail-content" id="detail-content"></div>
+    </dialog>
+    <dialog
+      class="checkout-dialog"
+      id="checkout-dialog"
+      aria-labelledby="checkout-title"
+    >
+      <button class="modal-close" data-close-dialog aria-label="Close checkout">
+        ×
+      </button>
+      <div class="checkout-content" id="checkout-content"></div>
+    </dialog>
+    <dialog
+      class="account-dialog"
+      id="account-dialog"
+      aria-labelledby="account-title"
+    >
+      <button class="modal-close" data-close-dialog aria-label="Close account">
+        ×
+      </button>
+      <div class="account-content">
+        <p class="eyebrow">Welcome to LENO</p>
+        <h2 id="account-title">Your style, <em>your way.</em></h2>
+        <p>
+          Sign in or create an account to keep your favourites close and follow
+          your orders.
+        </p>
+        <form id="account-form">
+          <label
+            >Email address<input
+              type="email"
+              required
+              placeholder="you@example.com" /></label
+          ><label
+            >Password<input
+              type="password"
+              minlength="8"
+              required
+              placeholder="At least 8 characters" /></label
+          ><button class="button button-dark" type="submit">Continue</button>
+          <p id="account-feedback" aria-live="polite"></p>
+        </form>
+        <p class="account-note">
+          Demo storefront: account services will be available when LENO
+          launches.
+        </p>
+      </div>
+    </dialog>
+    <dialog class="info-dialog" id="info-dialog" aria-labelledby="info-title">
+      <button class="modal-close" data-close-dialog aria-label="Close information">×</button>
+      <div class="info-content" id="info-content"></div>
+    </dialog>
+    <div
+      class="toast-region"
+      id="toast-region"
+      aria-live="polite"
+      aria-atomic="true"
+    ></div>
+  </body>
+</html>

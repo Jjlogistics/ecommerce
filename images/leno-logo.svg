@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 188 52" role="img" aria-labelledby="title">
+  <title id="title">LENO fashion marketplace</title>
+  <rect width="52" height="52" rx="15" fill="#212820"/>
+  <path d="M17 11h8v23h13v7H17z" fill="#e4bc79"/>
+  <path d="M68 17h8v18c0 3 1 4 4 4s5-2 5-5V17h8v28h-8v-3c-2 3-5 4-9 4-6 0-9-4-9-10z" fill="#212820"/>
+  <path d="M99 17h8v4c2-3 5-5 10-5 7 0 11 5 11 12v17h-8V30c0-4-2-7-6-7s-7 3-7 7v15h-8z" fill="#212820"/>
+  <path d="M145 16c9 0 15 6 15 15s-6 15-15 15-15-6-15-15 6-15 15-15m0 7c-5 0-7 3-7 8s2 8 7 8 7-3 7-8-2-8-7-8" fill="#212820"/>
+  <circle cx="173" cy="41" r="4" fill="#b67d4e"/>
+</svg>
