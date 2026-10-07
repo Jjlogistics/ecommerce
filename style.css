@@ -126,6 +126,9 @@ img { display: block; max-width: 100%; }
    ========================================================================== */
 .mobile-menu { display: none; }
 
+/* ==========================================================================
+   HERO & PRIMARY CALL TO ACTIONS
+   ========================================================================== */
 .hero { position: relative; display: grid; min-height: min(650px, calc(100vh - 110px)); grid-template-columns: 1.1fr .9fr; background: #e9e5dc; }
 .hero-image { position: relative; min-height: 550px; overflow: hidden; background: #b3a497 url("https://res.cloudinary.com/tjmnkfwb/image/upload/v1791391752/WhatsApp_Image_2026-10-06_at_23.51.22.jpg") center center/cover no-repeat; }
 .hero-image::after { position: absolute; inset: 0; background: linear-gradient(0deg,rgb(30 29 24 / 42%),transparent 34%),linear-gradient(90deg,transparent 75%,rgb(30 29 24 / 6%)); content: ""; }
@@ -153,6 +156,9 @@ img { display: block; max-width: 100%; }
 .hero-index { position: absolute; right: 50%; bottom: 27px; display: flex; align-items: center; gap: 9px; color: #fff; font-size: 8px; }
 .hero-index span:nth-child(2) { width: 52px; height: 1px; background: rgb(255 255 255 / 55%); }
 
+/* ==========================================================================
+   SECTION LAYOUTS & CATEGORY CARDS
+   ========================================================================== */
 .section-shell { width: min(1320px,calc(100% - 100px)); margin: 0 auto; }
 .category-section { padding: 93px 0 98px; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
@@ -172,6 +178,10 @@ img { display: block; max-width: 100%; }
 .category-card-bottom button { padding: 0; border: 0; background: transparent; color: #34382f; font-size: 9px; font-weight: 700; white-space: nowrap; }
 .category-card-bottom button span { padding-left: 7px; }
 .category-skeleton { height: 320px; background: linear-gradient(100deg,#eeece6 25%,#f7f6f2 40%,#eeece6 60%); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
+
+/* ==========================================================================
+   PRODUCT CARDS & COLLECTION ROWS
+   ========================================================================== */
 .product-section { padding: 43px 0 89px; }
 .product-section > .section-heading { margin-bottom: 27px; }
 .product-row { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 18px; }
@@ -259,6 +269,9 @@ img { display: block; max-width: 100%; }
 .catalog-error h3 { margin: 0 0 10px; font: 500 25px var(--serif); }
 .catalog-error p { color: #7c796f; font-size: 11px; }
 
+/* ==========================================================================
+   EDITORIAL, SALE, TRUST & NEWSLETTER SECTIONS
+   ========================================================================== */
 .editorial-banner { display: grid; min-height: 490px; grid-template-columns: 1.1fr .9fr; margin: 36px 0 70px; background: #465041; color: white; }
 .editorial-image { min-height: 400px; background: #b1947a url("https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=88") center 35%/cover no-repeat; }
 .editorial-copy { position: relative; display: flex; align-items: flex-start; justify-content: center; flex-direction: column; padding: 58px clamp(35px,7vw,95px); }
@@ -317,6 +330,9 @@ img { display: block; max-width: 100%; }
 .footer-bottom { display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); color: #69665e; font-size: 14px; line-height: 1.5; }
 .footer-logo img { width: 82px !important; }
 
+/* ==========================================================================
+   CART & WISHLIST DRAWER
+   ========================================================================== */
 .drawer-backdrop { position: fixed; z-index: 29; inset: 0; background: rgb(27 27 24 / 43%); animation: fade-in .18s ease both; }
 .side-drawer { position: fixed; z-index: 30; top: 0; right: 0; display: flex; width: min(490px,100%); height: 100dvh; flex-direction: column; background: var(--paper); box-shadow: -18px 0 60px rgb(0 0 0 / 13%); animation: slide-in .25s ease both; }
 .drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 26px 27px 19px; border-bottom: 1px solid var(--line); }
@@ -352,6 +368,7 @@ img { display: block; max-width: 100%; }
 dialog { color: var(--ink); }
 dialog[open] { animation: modal-in .18s ease both; }
 .product-dialog, .checkout-dialog, .account-dialog { position: fixed; max-width: calc(100vw - 32px); max-height: calc(100dvh - 32px); padding: 0; border: 0; background: var(--paper); box-shadow: 0 30px 100px rgb(0 0 0 / 30%); }
+/* Product, checkout, account, and information dialog content. */
 .product-dialog { width: min(970px,calc(100vw - 50px)); overflow: visible; }
 dialog::backdrop { background: rgb(25 25 22 / 55%); backdrop-filter: blur(2px); }
 .modal-close { position: absolute; z-index: 2; top: 12px; right: 12px; background: rgb(250 249 245 / 94%); }
@@ -495,9 +512,13 @@ dialog::backdrop { background: rgb(25 25 22 / 55%); backdrop-filter: blur(2px); 
   .reveal-item.is-visible { opacity: 1; transform: translateY(0); transition: opacity .4s ease, transform .4s ease; transition-delay: var(--reveal-delay, 0ms); }
 }
 
+/* ==========================================================================
+   RESPONSIVE LAYOUTS
+   ========================================================================== */
 @media (min-width: 1550px) {
   .hero { min-height: 690px; }
 }
+/* Compact desktop and tablet layouts. */
 @media (max-width: 1150px) {
   .site-header { padding: 0 25px; }
   .desktop-nav { gap: 12px; margin: 0 14px; }
@@ -512,6 +533,7 @@ dialog::backdrop { background: rgb(25 25 22 / 55%); backdrop-filter: blur(2px); 
   .mega-groups { grid-template-columns: repeat(4,minmax(100px,1fr)); }
   .footer-main { gap: 22px; }
 }
+/* Replace desktop navigation with the mobile menu and stack content as needed. */
 @media (max-width: 790px) {
   .announcement { gap: 10px; font-size: 8px; }
   .site-header { height: 67px; padding: 0 20px; }
@@ -573,6 +595,7 @@ dialog::backdrop { background: rgb(25 25 22 / 55%); backdrop-filter: blur(2px); 
   .footer-contact { grid-column: 3; grid-row: 1 / span 2; }
   .footer-bottom { flex-wrap: wrap; padding: 12px 0; }
 }
+/* Narrow phone layout. */
 @media (max-width: 520px) {
   html { scroll-padding-top: 75px; }
   .announcement { min-height: 29px; font-size: 7px; }

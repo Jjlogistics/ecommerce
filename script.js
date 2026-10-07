@@ -1,5 +1,8 @@
+// Product imagery uses Unsplash photo IDs so catalogue data stays compact.
 const image = (id, width = 720) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=82`;
+
+// Category definitions also drive the menus, category cards, and filter options.
 const categories = [
   {
     name: "Men",
@@ -159,6 +162,7 @@ const categories = [
   },
 ];
 
+// Sample inventory for this storefront demo; replace with a product API for launch.
 const mockProducts = [
   {
     id: "lno-101",
@@ -744,6 +748,7 @@ const mockProducts = [
 
 let products = mockProducts;
 
+// Sample state-to-city data used to populate the demo checkout form.
 const nigeriaStates = {
   Abia: ["Umuahia North", "Aba North", "Aba South", "Arochukwu"],
   Adamawa: ["Yola North", "Yola South", "Mubi North", "Jimeta"],
@@ -799,6 +804,7 @@ const nigeriaStates = {
   Zamfara: ["Gusau", "Kaura Namoda", "Talata Mafara", "Anka"],
 };
 
+// Shared formatting, escaping, and data-source helpers used by rendered markup.
 const formatNaira = (amount) =>
   new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -841,6 +847,8 @@ const readStore = (key, fallback) => {
     return fallback;
   }
 };
+
+// Restore only cart lines that still match a real item, valid option, and stock.
 const savedCart = readStore("leno-cart", []);
 let cart = Array.isArray(savedCart)
   ? savedCart.filter((line) => {
@@ -861,6 +869,8 @@ let wishlist = Array.isArray(savedWishlist)
       products.some((product) => product.id === id),
     )
   : [];
+
+// UI state shared by the catalogue, overlays, and account/checkout flows.
 let selectedCategory = "";
 let selectedSubcategory = "";
 let selectedGender = "";
@@ -872,6 +882,7 @@ let authenticatedCustomer = readDemoSession();
 let pendingCheckout = false;
 let accountMode = "login";
 
+// The account system is local demo authentication, not a production identity service.
 function readDemoSession() {
   try {
     const saved =
@@ -947,6 +958,7 @@ function openAccountDialog({ mode = "login", message = "" } = {}) {
   if (!$("#account-dialog").open) $("#account-dialog").showModal();
 }
 
+// Hash demo passwords with a per-account salt before saving them in local storage.
 function encodeBase64(bytes) {
   return btoa(String.fromCharCode(...new Uint8Array(bytes)));
 }
@@ -1086,6 +1098,7 @@ function requireCustomerForCheckout() {
   return false;
 }
 
+// Small DOM helpers and a reduced-motion-aware observer for revealed cards.
 const $ = (selector, parent = document) => parent.querySelector(selector);
 const $$ = (selector, parent = document) => [
   ...parent.querySelectorAll(selector),
@@ -1125,6 +1138,7 @@ function persistState() {
   }
 }
 
+// Informational dialog content is intentionally sample copy for the demo shop.
 function openInfoPage(page) {
   const infoPages = {
     delivery: {
@@ -1170,6 +1184,7 @@ function stockText(stock) {
   return { text: `${stock} in stock`, level: "plenty" };
 }
 
+// Render category navigation and collection cards from the shared category data.
 function categoryProductCount(category) {
   return products.filter((product) => product.category === category.name)
     .length;
@@ -1286,6 +1301,7 @@ function colourHex(color) {
   return colors[color] ?? "#b7aa9a";
 }
 
+// Apply the selected search text, filters, and sort order to the demo inventory.
 function matchesFilters(product) {
   const query = $("#product-search").value.trim().toLocaleLowerCase();
   const searchable = [
@@ -1458,6 +1474,7 @@ function setCategoryFilter(category = "", subcategory = "") {
   $("#products").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// Keep desktop and mobile cart/wishlist badges in sync with current state.
 function updateHeaderCounts() {
   const cartQuantity = cart.reduce((sum, line) => sum + line.quantity, 0);
   $("#cart-count").textContent = cartQuantity;
@@ -1475,6 +1492,7 @@ function productSlug(product) {
     .replace(/^-|-$/g, "");
 }
 
+// Wishlist changes update storage, visible product cards, and any open drawer.
 function toggleWishlist(productId) {
   wishlist = wishlist.includes(productId)
     ? wishlist.filter((id) => id !== productId)
@@ -1537,6 +1555,7 @@ function openProduct(productId, { updateUrl = true } = {}) {
   if (!$("#product-dialog").open) $("#product-dialog").showModal();
 }
 
+// Clean up product metadata and browser history when the detail dialog closes.
 function finishProductDialogClose(updateHistory = true) {
   const closedProductId = activeProductId;
   if (!closedProductId) return;
@@ -1587,6 +1606,7 @@ function productDetails(product) {
       ${recentlyViewed.length ? `<div class="related-products"><h3>More from this edit</h3>${recentlyViewed.map(({ id, name, price, images }) => `<button data-open-product="${id}"><img src="${image(images[0], 140)}" alt=""><span>${name}<small>${formatNaira(price)}</small></span></button>`).join("")}</div>` : ""}</div>`;
 }
 
+// Cart lines are keyed by product, size, and colour so variants remain distinct.
 function addToCart(productId, options = {}) {
   const product = products.find(({ id }) => id === productId);
   if (!product || product.stock === 0) return false;
@@ -1714,6 +1734,7 @@ function changeCart(productId, size, color, delta) {
   renderDrawer();
 }
 
+// Checkout is a demo flow: it collects no payment and clears the cart on submit.
 function renderCheckout() {
   if (!requireCustomerForCheckout()) return false;
   if (cart.length === 0) {
@@ -1763,6 +1784,7 @@ function renderAll() {
   updateHeaderCounts();
 }
 
+// Fetch the demo inventory and initialize every section that depends on it.
 async function initializeStorefront() {
   try {
     const catalog = await productService.list();
@@ -1797,6 +1819,7 @@ async function initializeStorefront() {
   }
 }
 
+// One delegated click handler routes actions from both static and rendered UI.
 document.addEventListener("click", (event) => {
   const target = event.target.closest("button, a");
   if (!target) return;
@@ -2033,6 +2056,7 @@ document.addEventListener("click", (event) => {
   }
 });
 
+// Reset every search/filter control to the unfiltered featured catalogue.
 function clearFilters() {
   selectedCategory = "";
   selectedSubcategory = "";
@@ -2057,6 +2081,7 @@ function clearFilters() {
   renderCatalog();
 }
 
+// Search, sorting, and filter controls all re-render the same catalogue view.
 $("#product-search").addEventListener("input", renderCatalog);
 $("#sort-select").addEventListener("change", renderCatalog);
 $("#clear-search").addEventListener("click", () => {
@@ -2102,6 +2127,7 @@ $("#empty-reset").addEventListener("click", clearFilters);
 $("#drawer-close").addEventListener("click", closeDrawer);
 $("#drawer-backdrop").addEventListener("click", closeDrawer);
 
+// State selection updates city options and the demo's Lagos-only cash option.
 $("#checkout-content").addEventListener("change", (event) => {
   if (event.target.matches("#checkout-state")) {
     const state = event.target.value;
@@ -2121,6 +2147,7 @@ $("#checkout-content").addEventListener("change", (event) => {
   }
 });
 
+// Validate demo checkout details, show a confirmation, then empty the cart.
 $("#checkout-content").addEventListener("submit", (event) => {
   if (event.target.id !== "checkout-form") return;
   event.preventDefault();
@@ -2152,6 +2179,7 @@ $("#checkout-content").addEventListener("click", (event) => {
   if (event.target.closest("#finish-order")) $("#checkout-dialog").close();
 });
 
+// Wire the forms and dialogs whose content is submitted or closed dynamically.
 $("#newsletter-form").addEventListener("submit", (event) => {
   event.preventDefault();
   $("#newsletter-feedback").textContent =
@@ -2182,6 +2210,7 @@ $("#product-dialog").addEventListener("cancel", (event) => {
 });
 updateAccountTrigger();
 
+// Product URLs support direct links and browser back/forward navigation.
 window.addEventListener("popstate", () => {
   const slug = window.location.pathname.match(/^\/products\/([^/]+)$/)?.[1];
   const product = products.find((item) => productSlug(item) === slug);
@@ -2196,6 +2225,7 @@ window.addEventListener("popstate", () => {
   }
 });
 
+// Close the category menu when a click lands outside the site header.
 document.addEventListener("click", (event) => {
   if (!event.target.closest(".site-header") && !$("#mega-menu").hidden) {
     $("#mega-menu").hidden = true;
