@@ -868,6 +868,223 @@ let activePanel = "cart";
 let lastFocusedElement = null;
 let activeProductId = null;
 let closingProductFromHistory = false;
+let authenticatedCustomer = readDemoSession();
+let pendingCheckout = false;
+let accountMode = "login";
+
+function readDemoSession() {
+  try {
+    const saved =
+      sessionStorage.getItem("leno-demo-session") ??
+      localStorage.getItem("leno-demo-remembered-session");
+    if (!saved) return null;
+    const customer = JSON.parse(saved);
+    return typeof customer?.name === "string" &&
+      typeof customer?.email === "string"
+      ? customer
+      : null;
+  } catch (error) {
+    console.error("Could not restore the demo account session.", error);
+    return null;
+  }
+}
+
+function updateAccountTrigger() {
+  const name = authenticatedCustomer?.name;
+  const label = name ? `Account for ${name}` : "Sign in or create an account";
+  $("#account-trigger").setAttribute("aria-label", label);
+  $("#mobile-account").textContent = name ? `Account · ${name}` : "Account";
+}
+
+function accountMessage(message, isError = false) {
+  const feedback = $("#account-feedback");
+  if (!feedback) return;
+  feedback.textContent = message;
+  feedback.classList.toggle("is-error", isError);
+}
+
+function renderAccountDialog(message = "") {
+  const content = $("#account-content");
+  if (authenticatedCustomer) {
+    content.innerHTML =
+      `<div class="account-card"><p class="eyebrow">Your LENO account</p><h2 id="account-title">Good to see you, <em>${escapeHtml(authenticatedCustomer.name.split(/\s+/)[0])}.</em></h2><p>You're signed in as ${escapeHtml(authenticatedCustomer.email)}. Your cart stays saved on this device.</p><p class="account-note">This is a local demo account, not a secure production login. Connect a trusted authentication service before launch.</p><button class="button button-outline account-signout" type="button" id="account-signout">Sign out</button></div>`;
+    return;
+  }
+
+  const registering = accountMode === "register";
+  content.innerHTML =
+    `<div class="account-card">
+      <p class="eyebrow">${pendingCheckout ? "Your cart is saved" : "Welcome to LENO"}</p>
+      <h2 id="account-title">${pendingCheckout ? "One more step, " : "Your style, "}<em>${pendingCheckout ? "then checkout." : "your way."}</em></h2>
+      <p class="account-intro">${pendingCheckout ? "Create an account or sign in before continuing to checkout. Your cart will be waiting." : registering ? "Create an account to check out and keep your cart close." : "Sign in to your account for a more personal shopping experience."}</p>
+      <form id="account-form" novalidate>
+        ${registering ? '<label>Full name<span class="account-input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="8" r="4"/></svg><input name="name" type="text" autocomplete="name" required minlength="2" placeholder="e.g. Amara Okafor"></span></label>' : ""}
+        <label>Email address<span class="account-input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></span></label>
+        <label>Password<span class="account-input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input name="password" type="password" autocomplete="${registering ? "new-password" : "current-password"}" minlength="8" required placeholder="${registering ? "At least 8 characters" : "Enter your password"}"></span></label>
+        ${registering ? '<label>Confirm password<span class="account-input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><input name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required placeholder="Confirm your password"></span></label>' : '<div class="account-form-options"><label class="remember-option"><input name="rememberMe" type="checkbox"><span>Remember me</span></label><button class="forgot-password" type="button" id="forgot-password">Forgot password?</button></div>'}
+        <button class="button button-dark account-submit" type="submit">${registering ? "Create account" : "Sign in"}</button>
+        <p id="account-feedback" aria-live="polite" role="status"></p>
+      </form>
+      <button class="account-mode-toggle" type="button" data-account-mode="${registering ? "login" : "register"}">${registering ? "Already have an account? Sign in" : "Don’t have an account? Sign up"}</button>
+    <div class="auth-divider"><span>or</span></div>
+    <div class="social-auth">
+      <button type="button" class="button button-outline google-auth-btn" id="google-auth-btn" aria-label="Continue with Google">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span>Continue with Google</span>
+      </button>
+    </div>
+      <p class="account-note">Demo account details are stored only in this browser. This is not a secure production authentication service.</p>
+    </div>`;
+  accountMessage(message);
+}
+
+
+
+function openAccountDialog({ mode = "login", message = "" } = {}) {
+  accountMode = mode;
+  renderAccountDialog(message);
+  lastFocusedElement = document.activeElement;
+  if (!$("#account-dialog").open) $("#account-dialog").showModal();
+}
+
+function encodeBase64(bytes) {
+  return btoa(String.fromCharCode(...new Uint8Array(bytes)));
+}
+
+async function hashDemoPassword(password, salt) {
+  if (!crypto.subtle) {
+    throw new Error("Secure browser cryptography is unavailable in this context.");
+  }
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits"],
+  );
+  return crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
+    key,
+    256,
+  );
+}
+
+function constantTimeEqual(left, right) {
+  if (left.length !== right.length) return false;
+  let difference = 0;
+  for (let index = 0; index < left.length; index += 1) {
+    difference |= left.charCodeAt(index) ^ right.charCodeAt(index);
+  }
+  return difference === 0;
+}
+
+async function handleAccountSubmit(form) {
+  if (!form.reportValidity()) return;
+  const submitButton = $('button[type="submit"]', form);
+  submitButton.disabled = true;
+  accountMessage("Please wait…");
+  try {
+    const formData = new FormData(form);
+    const email = String(formData.get("email")).trim().toLocaleLowerCase();
+    const password = String(formData.get("password"));
+    const confirmPassword = String(formData.get("confirmPassword") ?? "");
+    const accounts = readStore("leno-demo-accounts", []);
+    const savedAccounts = Array.isArray(accounts) ? accounts : [];
+
+    if (accountMode === "register") {
+      const name = String(formData.get("name")).trim();
+      if (name.length < 2) {
+        accountMessage("Enter your full name to create an account.", true);
+        return;
+      }
+      if (password !== confirmPassword) {
+        accountMessage("Passwords do not match. Please try again.", true);
+        return;
+      }
+      if (savedAccounts.some((account) => account.email === email)) {
+        accountMode = "login";
+        renderAccountDialog("An account already uses this email. Sign in instead.");
+        return;
+      }
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const digest = await hashDemoPassword(password, salt);
+      savedAccounts.push({
+        email,
+        name,
+        salt: encodeBase64(salt),
+        digest: encodeBase64(digest),
+      });
+      localStorage.setItem("leno-demo-accounts", JSON.stringify(savedAccounts));
+      await startDemoSession({ email, name }, formData.get("rememberMe") === "on");
+      return;
+    }
+
+    const account = savedAccounts.find((saved) => saved.email === email);
+    if (!account) {
+      accountMessage("No account was found for this email. Create one to continue.", true);
+      return;
+    }
+    const derived = await hashDemoPassword(
+      password,
+      Uint8Array.from(atob(account.salt), (character) =>
+        character.charCodeAt(0),
+      ),
+    );
+    const digest = encodeBase64(derived);
+    if (!constantTimeEqual(digest, account.digest)) {
+      accountMessage("That email and password combination was not recognised.", true);
+      return;
+    }
+    await startDemoSession(
+      { email: account.email, name: account.name },
+      formData.get("rememberMe") === "on",
+    );
+  } catch (error) {
+    console.error("Could not complete the local demo account action.", error);
+    accountMessage(
+      "We couldn't save or verify this demo account in your browser. Please try again.",
+      true,
+    );
+  } finally {
+    if (submitButton.isConnected) submitButton.disabled = false;
+  }
+}
+
+
+
+async function startDemoSession(customer, rememberMe = false) {
+  if (rememberMe) {
+    localStorage.setItem(
+      "leno-demo-remembered-session",
+      JSON.stringify(customer),
+    );
+    sessionStorage.removeItem("leno-demo-session");
+  } else {
+    sessionStorage.setItem("leno-demo-session", JSON.stringify(customer));
+    localStorage.removeItem("leno-demo-remembered-session");
+  }
+  authenticatedCustomer = customer;
+  updateAccountTrigger();
+  $("#account-dialog").close();
+  if (pendingCheckout) {
+    pendingCheckout = false;
+    renderCheckout();
+  }
+}
+
+function handleGoogleAuth() {
+  showToast("Google sign-in requires a backend OAuth integration. This demo uses local accounts only.");
+}
+
+function requireCustomerForCheckout() {
+  if (authenticatedCustomer) return true;
+  pendingCheckout = true;
+  openAccountDialog({
+    mode: "register",
+    message: "Create an account or sign in before continuing to checkout. Your cart is saved.",
+  });
+  return false;
+}
 
 const $ = (selector, parent = document) => parent.querySelector(selector);
 const $$ = (selector, parent = document) => [
@@ -903,7 +1120,7 @@ function persistState() {
     localStorage.setItem("leno-cart", JSON.stringify(cart));
     localStorage.setItem("leno-wishlist", JSON.stringify(wishlist));
   } catch (error) {
-    console.error("Could not persist the bag and wishlist to this device.", error);
+    console.error("Could not persist the cart and wishlist to this device.", error);
     showToast("Your changes are active, but could not be saved on this device.");
   }
 }
@@ -932,7 +1149,7 @@ function openInfoPage(page) {
     },
     privacy: {
       title: "Privacy",
-      body: "<p>This demonstration does not send checkout details to a server. The bag and wishlist are stored in local browser storage on this device.</p><p>A production privacy notice must describe real data collection, retention, processors and customer rights before launch.</p>",
+      body: "<p>This demonstration does not send checkout details to a server. The cart and wishlist are stored in local browser storage on this device.</p><p>A production privacy notice must describe real data collection, retention, processors and customer rights before launch.</p>",
     },
     terms: {
       title: "Terms & conditions",
@@ -1364,7 +1581,7 @@ function productDetails(product) {
       <label class="option-label">Colour <span id="selected-color-label">${product.colors[0]}</span><div class="option-chips">${product.colors.map((color, index) => `<button class="color-chip ${index === 0 ? "is-selected" : ""}" type="button" data-color="${color}" aria-label="${color}" aria-pressed="${index === 0}" style="--swatch:${colourHex(color)}"></button>`).join("")}</div></label>
       <label class="option-label">Size <button class="size-guide-link" type="button" data-size-guide>Size guide</button><div class="option-chips size-chips">${product.sizes.map((size) => `<button class="size-chip" type="button" data-size="${size}" aria-pressed="false">${size}</button>`).join("")}</div></label>
       <div class="quantity-control"><span>Quantity</span><div><button type="button" data-detail-quantity="-1" aria-label="Decrease quantity">−</button><output id="detail-quantity">1</output><button type="button" data-detail-quantity="1" aria-label="Increase quantity">+</button></div></div>
-      <div class="detail-actions"><button class="button button-dark detail-add" data-add-cart="${product.id}" ${product.stock === 0 ? "disabled" : ""}>${product.stock === 0 ? "Out of stock" : "Add to bag"} <span>${product.stock > 0 ? "↗" : ""}</span></button><button class="button button-light detail-buy" data-buy-now="${product.id}" ${product.stock === 0 ? "disabled" : ""}>Buy now</button><button class="detail-wishlist ${wishlist.includes(product.id) ? "is-saved" : ""}" data-wishlist="${product.id}" aria-pressed="${wishlist.includes(product.id)}" aria-label="${wishlist.includes(product.id) ? "Remove from" : "Add to"} wishlist">♥</button></div>
+      <div class="detail-actions"><button class="button button-dark detail-add" data-add-cart="${product.id}" ${product.stock === 0 ? "disabled" : ""}>${product.stock === 0 ? "Out of stock" : "Add to Cart"} <span>${product.stock > 0 ? "↗" : ""}</span></button><button class="button button-light detail-buy" data-buy-now="${product.id}" ${product.stock === 0 ? "disabled" : ""}>Buy now</button><button class="detail-wishlist ${wishlist.includes(product.id) ? "is-saved" : ""}" data-wishlist="${product.id}" aria-pressed="${wishlist.includes(product.id)}" aria-label="${wishlist.includes(product.id) ? "Remove from" : "Add to"} wishlist">♥</button></div>
       <div class="delivery-note"><span>↗</span><p><strong>Delivery across Nigeria</strong><br>Complimentary on orders over ₦150,000. Checkout for local estimates.</p></div>
       <details class="product-extra"><summary>Details & care</summary><p>Designed with care. Follow the garment care label for lasting wear. Made by ${product.brand}.</p></details><details class="product-extra"><summary>Delivery & returns</summary><p>Delivery available across all 36 states and the FCT. Eligible unworn pieces can be returned within 7 days of delivery.</p></details>
       ${recentlyViewed.length ? `<div class="related-products"><h3>More from this edit</h3>${recentlyViewed.map(({ id, name, price, images }) => `<button data-open-product="${id}"><img src="${image(images[0], 140)}" alt=""><span>${name}<small>${formatNaira(price)}</small></span></button>`).join("")}</div>` : ""}</div>`;
@@ -1389,7 +1606,7 @@ function addToCart(productId, options = {}) {
   const currentQuantity = line?.quantity ?? 0;
   if (currentQuantity + quantity > product.stock) {
     showToast(
-      `Only ${product.stock} available. Your bag already has ${currentQuantity}.`,
+      `Only ${product.stock} available. Your cart already has ${currentQuantity}.`,
     );
     return false;
   }
@@ -1398,7 +1615,7 @@ function addToCart(productId, options = {}) {
   persistState();
   updateHeaderCounts();
   if ($("#product-dialog").open) $("#product-dialog").close();
-  showToast(`${product.name} added to your bag.`);
+  showToast(`${product.name} added to your cart.`);
   openDrawer("cart");
   if (options.buyNow) {
     closeDrawer();
@@ -1408,7 +1625,7 @@ function addToCart(productId, options = {}) {
 }
 
 function renderDrawer() {
-  const title = activePanel === "cart" ? "Your bag" : "Saved for later";
+  const title = activePanel === "cart" ? "Your cart" : "Saved for later";
   $("#drawer-title").textContent = title;
   const lines =
     activePanel === "cart"
@@ -1422,7 +1639,7 @@ function renderDrawer() {
         }));
   if (lines.length === 0) {
     $("#drawer-body").innerHTML =
-      `<div class="drawer-empty"><span>✳</span><h3>${activePanel === "cart" ? "A good find is out there." : "Your wishlist is waiting."}</h3><p>${activePanel === "cart" ? "Your bag is taking a breather. Find something worth bringing home." : "Keep your favourite pieces close. Save something you love and it’ll be right here."}</p><button class="button button-dark" data-close-drawer>Explore the edit <span>↗</span></button></div>`;
+      `      <div class="drawer-empty"><span>✳</span><h3>${activePanel === "cart" ? "A good find is out there." : "Your wishlist is waiting."}</h3><p>${activePanel === "cart" ? "Your cart is taking a breather. Find something worth bringing home." : "Keep your favourite pieces close. Save something you love and it’ll be right here."}</p><button class="button button-dark" data-close-drawer>Explore the edit <span>↗</span></button></div>`;
     $("#drawer-footer").innerHTML = "";
     return;
   }
@@ -1431,7 +1648,7 @@ function renderDrawer() {
       const product = products.find(({ id }) => id === line.productId);
       if (!product) return "";
       return `<article class="drawer-line"><img src="${image(product.images[0], 200)}" alt="${product.name}"><div class="drawer-line-info"><span class="product-brand">${product.brand}</span><h3>${product.name}</h3><span>${line.color || product.colors[0]}${line.size ? ` · ${line.size}` : ""}</span><strong>${formatNaira(product.price)}</strong>
-      ${line.isWishlist ?       `<div class="drawer-line-actions"><button data-move-to-cart="${product.id}">${product.sizes.length > 1 ? "Choose size" : "Move to bag"}</button><button data-wishlist="${product.id}" aria-label="Remove ${product.name} from wishlist">Remove</button></div>` : `<div class="drawer-line-actions"><div class="bag-quantity"><button data-cart-change="${product.id}" data-size="${line.size}" data-color="${line.color}" data-delta="-1" aria-label="Decrease quantity">−</button><span>${line.quantity}</span><button data-cart-change="${product.id}" data-size="${line.size}" data-color="${line.color}" data-delta="1" aria-label="Increase quantity" ${line.quantity >= product.stock ? "disabled" : ""}>+</button></div><button data-remove-cart="${product.id}" data-size="${line.size}" data-color="${line.color}">Remove</button></div>`}</div></article>`;
+      ${line.isWishlist ?       `<div class="drawer-line-actions"><button data-move-to-cart="${product.id}">${product.sizes.length > 1 ? "Choose size" : "Move to cart"}</button><button data-wishlist="${product.id}" aria-label="Remove ${product.name} from wishlist">Remove</button></div>` : `<div class="drawer-line-actions"><div class="bag-quantity"><button data-cart-change="${product.id}" data-size="${line.size}" data-color="${line.color}" data-delta="-1" aria-label="Decrease quantity">−</button><span>${line.quantity}</span><button data-cart-change="${product.id}" data-size="${line.size}" data-color="${line.color}" data-delta="1" aria-label="Increase quantity" ${line.quantity >= product.stock ? "disabled" : ""}>+</button></div><button data-remove-cart="${product.id}" data-size="${line.size}" data-color="${line.color}">Remove</button></div>`}</div></article>`;
     })
     .join("");
   if (activePanel === "cart") {
@@ -1460,6 +1677,12 @@ function openDrawer(panel) {
   $("#side-drawer").hidden = false;
   document.body.classList.add("has-overlay");
   $("#drawer-close").focus();
+}
+
+function closeMobileNavigation() {
+  $("#mobile-menu").hidden = true;
+  $("#mobile-menu-button").setAttribute("aria-expanded", "false");
+  $("#mobile-menu-button").setAttribute("aria-label", "Open navigation");
 }
 
 function closeDrawer() {
@@ -1492,6 +1715,11 @@ function changeCart(productId, size, color, delta) {
 }
 
 function renderCheckout() {
+  if (!requireCustomerForCheckout()) return false;
+  if (cart.length === 0) {
+    showToast("Your cart is empty. Add something before checkout.");
+    return false;
+  }
   const subtotal = cart.reduce(
     (sum, line) =>
       sum +
@@ -1513,6 +1741,7 @@ function renderCheckout() {
   lastFocusedElement = document.activeElement;
   $("#checkout-dialog").showModal();
   $("#checkout-content input:not([type=radio]), #checkout-content select")?.focus();
+  return true;
 }
 
 function showToast(message) {
@@ -1618,9 +1847,49 @@ document.addEventListener("click", (event) => {
   }
   if (target.matches("[data-wishlist]"))
     toggleWishlist(target.dataset.wishlist);
-  if (target.matches("#cart-trigger, #mobile-cart")) openDrawer("cart");
-  if (target.matches("#wishlist-trigger, #mobile-wishlist"))
+  if (target.matches("#cart-trigger, #mobile-cart")) {
+    if (target.matches("#mobile-cart")) closeMobileNavigation();
+    openDrawer("cart");
+  }
+  if (target.matches("#wishlist-trigger, #mobile-wishlist")) {
+    if (target.matches("#mobile-wishlist")) closeMobileNavigation();
     openDrawer("wishlist");
+  }
+  if (target.matches("#account-trigger, #mobile-account")) {
+    closeMobileNavigation();
+    pendingCheckout = false;
+    openAccountDialog({
+      mode: "login",
+    });
+  }
+  if (target.matches("#account-signout")) {
+    try {
+      sessionStorage.removeItem("leno-demo-session");
+      localStorage.removeItem("leno-demo-remembered-session");
+      authenticatedCustomer = null;
+      pendingCheckout = false;
+      updateAccountTrigger();
+      $("#account-dialog").close();
+      showToast("You’ve been signed out. Your cart is still saved.");
+    } catch (error) {
+      console.error("Could not end the local demo account session.", error);
+      accountMessage("We couldn’t sign you out in this browser. Please try again.", true);
+    }
+  }
+  if (target.matches("[data-account-mode]")) {
+    accountMode = target.dataset.accountMode;
+    renderAccountDialog();
+    $('input[name="email"]', $("#account-content"))?.focus();
+  }
+  if (target.matches("#google-auth-btn")) {
+    handleGoogleAuth();
+  }
+  if (target.matches("#forgot-password")) {
+    accountMessage(
+      "Password reset is not available for local demo accounts. Create a new account to continue.",
+      true,
+    );
+  }
   if (target.matches("#drawer-close, #drawer-backdrop, [data-close-drawer]"))
     closeDrawer();
   if (target.matches("[data-remove-cart]")) {
@@ -1640,7 +1909,7 @@ document.addEventListener("click", (event) => {
     const product = products.find(({ id }) => id === target.dataset.moveToCart);
     if (product?.sizes.length > 1) {
       openProduct(product.id);
-      showToast("Choose a size to move this piece to your bag.");
+      showToast("Choose a size to move this piece to your cart.");
     } else if (product && addToCart(product.id)) {
       wishlist = wishlist.filter((id) => id !== product.id);
       persistState();
@@ -1701,10 +1970,6 @@ document.addEventListener("click", (event) => {
     $("#products").scrollIntoView({ behavior: "smooth" });
     setTimeout(() => $("#product-search").focus(), 450);
   }
-  if (target.matches("#account-trigger")) {
-    lastFocusedElement = document.activeElement;
-    $("#account-dialog").showModal();
-  }
   if (target.matches("#retry-catalog")) initializeStorefront();
   if (target.matches("[data-detail-image]")) {
     $(".detail-main-image").src = image(target.dataset.detailImage, 1000);
@@ -1764,9 +2029,7 @@ document.addEventListener("click", (event) => {
     else dialog.close();
   }
   if (target.matches("#mobile-menu a")) {
-    $("#mobile-menu").hidden = true;
-    $("#mobile-menu-button").setAttribute("aria-expanded", "false");
-    $("#mobile-menu-button").setAttribute("aria-label", "Open navigation");
+    closeMobileNavigation();
   }
 });
 
@@ -1861,6 +2124,11 @@ $("#checkout-content").addEventListener("change", (event) => {
 $("#checkout-content").addEventListener("submit", (event) => {
   if (event.target.id !== "checkout-form") return;
   event.preventDefault();
+  if (!authenticatedCustomer) {
+    $("#checkout-dialog").close();
+    requireCustomerForCheckout();
+    return;
+  }
   if (!event.target.reportValidity()) return;
   const formData = new FormData(event.target);
   const phoneDigits = String(formData.get("phone")).replace(/\D/g, "");
@@ -1877,7 +2145,7 @@ $("#checkout-content").addEventListener("submit", (event) => {
   cart = [];
   persistState();
   updateHeaderCounts();
-  $("#drawer-title").textContent = "Your bag";
+  $("#drawer-title").textContent = "Your cart";
 });
 
 $("#checkout-content").addEventListener("click", (event) => {
@@ -1890,16 +2158,20 @@ $("#newsletter-form").addEventListener("submit", (event) => {
     "Thanks for your interest. Newsletter sign-up will be available when LENO launches.";
   event.target.reset();
 });
-$("#account-form").addEventListener("submit", (event) => {
+$("#account-dialog").addEventListener("submit", (event) => {
+  if (event.target.id !== "account-form") return;
   event.preventDefault();
-  $("#account-feedback").textContent =
-    "Account sign-in will be available when the store launches.";
+  handleAccountSubmit(event.target);
 });
-["#checkout-dialog", "#account-dialog", "#info-dialog"].forEach(
+["#checkout-dialog", "#info-dialog"].forEach(
   (selector) => {
     $(selector).addEventListener("close", () => lastFocusedElement?.focus?.());
   },
 );
+$("#account-dialog").addEventListener("close", () => {
+  if (!authenticatedCustomer) pendingCheckout = false;
+  lastFocusedElement?.focus?.();
+});
 
 $("#product-dialog").addEventListener("close", () => {
   finishProductDialogClose(!closingProductFromHistory);
@@ -1908,6 +2180,7 @@ $("#product-dialog").addEventListener("cancel", (event) => {
   event.preventDefault();
   closeProductDialog();
 });
+updateAccountTrigger();
 
 window.addEventListener("popstate", () => {
   const slug = window.location.pathname.match(/^\/products\/([^/]+)$/)?.[1];
